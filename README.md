@@ -1,7 +1,82 @@
-# Vue 3 + Vite
+# Expandable Card
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Simple Expandable Card
 
-## Recommended IDE Setup
+![Alt text](image.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Installation
+
+- npm install expand-card-flavored
+- npm i expand-card-flavored
+
+## Global Registration
+
+```javascript
+import { createApp } from 'vue'
+import App from './App.vue'
+import ExpandCard from "expand-card-flavored"
+import "expand-card-flavored/dist/style.css"
+
+const app = createApp(App);
+
+app.use(ExpandCard);
+
+app.mount("#app");
+```
+
+## Local Registration
+
+```javascript
+import ExpandCard from 'expand-card-flavored'
+import "expand-card-flavored/dist/style.css"
+
+export default {
+  name: 'App',
+  components: {
+    "expand-card": ExpandCard
+  }
+}
+```
+
+## Demo
+
+```html
+<template>
+  <expand-card :cards="[
+    {
+      image_path: 'https:.....', 
+      icon: null,
+      label: 'Test',
+    },
+    {
+      image_path: '@/assets/images/4.jpg',
+      icon: 'A',
+      label: 'Test'
+    },
+  ]
+    " />
+</template>
+```
+OR
+```html
+<template>
+  <expand-card :cards="data" />
+</template>
+
+<script setup>
+    var data = [
+    {
+      image_path: 'https:.....', 
+      icon: null,
+      label: 'Test',
+    },
+    {
+      image_path: '@/assets/images/4.jpg',
+      icon: 'A',
+      label: 'Test'
+    },
+  ];
+</script>
+```
+
+code for fun
