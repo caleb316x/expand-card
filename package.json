@@ -1,0 +1,44 @@
+{
+  "name": "expand-card-flavored",
+  "private": false,
+  "version": "1.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/expand-card.umd.cjs",
+  "module": "./dist/expand-card.js",
+  "exports": {
+    ".": {
+      "import": "./dist/expand-card.js",
+      "require": "./dist/expand-card.umd.cjs"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.11"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "vite": "^5.0.8"
+  },
+  "description": "This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caleb316x/expand-card.git"
+  },
+  "keywords": [
+    "card"
+  ],
+  "author": "flavored",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/caleb316x/expand-card/issues"
+  },
+  "homepage": "https://github.com/caleb316x/expand-card#readme"
+}
