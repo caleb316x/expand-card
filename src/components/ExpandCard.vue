@@ -1,54 +1,124 @@
-
 <template>
-  <div class="wall">
-      <div :class="isActive(index) ? 'card active' : 'card'" v-for="(card, index) in cards" :key="card"
-          v-on:click="expand_card(index)">
-          <div class="card-content" :style="{ 'height': image_height + 'px', '--bg': 'url(' + card.image_path + ')' }"></div>
-          <div class="card-icon">{{ card.icon || "🌟" }}</div>
-          <div v-if="card.label" class="card-label">{{ card.label }}</div>
+  <div class="wall" :style="styleObject">
+    <div
+      class="card"
+      :class="isActive(index) ? 'active' : ''"
+      v-for="(card, index) in cards"
+      :key="card"
+      v-on:click="_expand($event, index)"
+    >
+      <div
+        class="card-content"
+        :style="{
+          height: cardHeight + 'px',
+          '--bg': 'url(' + card.imagePath + ')',
+        }"
+      ></div>
+      <div
+        v-show="!hideIcon"
+        class="card-icon"
+        :style="{ 'background-color': iconBGColor, color: iconFontColor }"
+        :class="iconCenter ? 'icon-center' : 'icon-left'"
+      >
+        {{ _iconStrip(card.icon) || "🌟" }}
       </div>
+      <div v-if="card.label" class="card-label" :class="hideIcon? 'label-wide' : ''">
+        {{ card.label }}
+      </div>
+      <a :href="card.link" v-if="card.link" class="card-link">🔗</a>
+    </div>
   </div>
 </template>
 
-<script >
+<script>
 export default {
   props: {
-      cards: {
-          type: Array,
-          required: true,
-          validator: (value) => {
-              // Check if each item in the array has the expected structure
-              return (
-                  Array.isArray(value) &&
-                  value.every((item) =>
-                      typeof item.image_path === 'string' &&
-                      (typeof item.icon === 'string' || item.icon === null) &&
-                      (typeof item.label === 'string' || item.label === null)
-                  )
-              );
-          }
-      }
+    cards: {
+      type: Array,
+    },
+    cardHeight: {
+      type: Number,
+      default: 400,
+    },
+    expandWidth: {
+      type: Number,
+      default: 200,
+    },
+    hideIcon: {
+      type: Boolean,
+    },
+    iconCenter: {
+      type: Boolean,
+    },
+    iconBGColor: {
+      type: String,
+      default: "teal",
+    },
+    iconFontColor: {
+      type: String,
+      default: "white",
+    },
+    labelBGColor: {
+      type: String,
+      default: "#FFFFFF80",
+    },
+    labelFontColor: {
+      type: String,
+      default: "black",
+    },
+    labelFontSize: {
+      type: Number,
+      default: 16,
+    },
+    fontFamily: {
+      type: Array,
+      default: ["Century Gothic", "Arial"],
+    },
   },
   data() {
+    return {
+      activeIndex: null,
+    };
+  },
+  computed: {
+    IconStrip(text) {
+      return text;
+    },
+    styleObject: function () {
       return {
-          image_height: 400,
-          image_max_width: 220,
-          activeIndex: null,
+        "--card-min": "70px",
+        "--card-maxWidth": this.expandWidth + "px",
+        "--card-height": this.cardHeight + "px",
+        "--icon-bgc": this.iconBGColor,
+        "--icon-font-color": this.iconFontColor,
+        "--icon-color-hover": this.iconBGColor,
+        "--icon-bgcolor-hover": this.iconFontColor,
+        "--label-bg-color": this.labelBGColor,
+        "--label-font-color": this.labelFontColor,
+        "--label-font-size": this.labelFontSize,
+        "--label-font-weight": this.labelFontWeight,
+        "--font-family": this.fontFamily.join(","),
       };
+    },
   },
   methods: {
-      expand_card: function (index) {
-          console.log(index);
-          if (this.isActive(index)) {
-              this.activeIndex = null;
-          } else {
-              this.activeIndex = index;
-          }
-      },
-      isActive(index) {
-          return this.activeIndex === index;
-      },
-  }
+    _expand: function (event, index) {
+      const targetClass = event.target.className;
+      if (targetClass != "card-link" && targetClass != "card-label") {
+        this.activeIndex = this.isActive(index) ? null : index;
+      }
+    },
+    isActive(index) {
+      return this.activeIndex === index;
+    },
+    _iconStrip: function (text) {
+      return text != null
+        ? text === "string"
+          ? text.charAt(0)
+          : text
+        : false;
+    },
+  },
 };
 </script>
 
@@ -59,15 +129,14 @@ export default {
   text-align: center;
   margin-top: 8px;
   margin-bottom: 8px;
+  font-family: var(--font-family);
 }
 
 .card {
-  --card-min: 70px;
-  --card-max: 220px;
   position: relative;
   display: inline-block;
   border-radius: 8px;
-  height: 400px;
+  height: var(--card-height);
   width: var(--card-min);
   margin: 0px 2px 0px;
   text-align: center;
@@ -77,7 +146,6 @@ export default {
 
 .card-content {
   border-radius: 8px;
-  /* height: 400px; */
   background-size: auto 150%;
   background-position: center;
   background-image: var(--bg);
@@ -87,13 +155,11 @@ export default {
 .card-icon {
   font-weight: bold;
   font-size: 10;
-  color: white;
-  background-color: teal;
   background-image: var(--bg);
   height: 20px;
   width: 20px;
   position: absolute;
-  left: 15px;
+  left: calc(50% - 20px);
   bottom: 15px;
   border-radius: 30px;
   text-align: center;
@@ -103,9 +169,11 @@ export default {
 
 .card-label {
   font-weight: bold;
+  font-style: var(--label-font-style);
+  font-size: calc(var(--label-font-size) * 1px);
   padding: 8px;
-  width: 135px;
-  background: rgba(255, 255, 255, 0);
+  width: calc(100% - 85px);
+  background: var(--label-bg-color);
   position: absolute;
   text-align: center;
   opacity: 0;
@@ -115,22 +183,59 @@ export default {
   transition: 0.25s ease-in-out;
 }
 
-.card-icon:hover {
-  color: teal;
-  background-color: white;
-}
-
-.active {
-  width: 220px;
-}
-
-.card.active .card-icon {
+.label-wide {
+  width: calc(100% - 36px);
   left: 10px;
 }
 
+.card-link {
+  width: 24px;
+  height: 24px;
+  /* background-color: #d3d3d380; */
+  position: absolute;
+  text-align: center;
+  opacity: 0;
+  top: 10px;
+  right: 10px;
+  border-radius: 4px;
+  transition: 0.25s ease-in-out;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+.card-icon:hover {
+  color: var(--icon-color-hover);
+  background-color: var(--icon-bgcolor-hover);
+}
+
+.card-link:hover {
+  background-color: #ffffff;
+  box-shadow: 1px 1px 8px gray;
+}
+
+.active {
+  width: var(--card-maxWidth);
+}
+
+.card.active .icon-left {
+  left: 10px;
+}
+
+/* .card.active .icon-center {
+  left: calc(50% - 20px);
+} */
+
+.card.active .card-link {
+  opacity: 1;
+}
 .card.active .card-label {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.5)
 }
 
 .card.active .card-content {
