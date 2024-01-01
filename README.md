@@ -125,7 +125,7 @@ export default {
           link: '#', 
         }, 
         { 
-          imagePath: img1,
+          imagePath: Img1,
           icon: 'A',
           label: 'Test' 
         }, 
@@ -162,7 +162,7 @@ OR
       link: "#",
     },
     {
-      imagePath: img1,
+      imagePath: Img1,
       icon: "A",
       label: "Test",
     },
